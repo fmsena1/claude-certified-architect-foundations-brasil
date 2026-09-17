@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Certified Architect – Foundations (Brasil)</title>
+<meta name="description" content="Guia de estudo comunitário e não-oficial sobre o ecossistema Claude/Anthropic: modelos, API, agentes, MCP, RAG, segurança e deploy enterprise.">
+<style>
+  :root {
+    --bg: #0b0f14;
+    --bg-alt: #11161d;
+    --card: #161d26;
+    --border: #232c38;
+    --text: #e6edf3;
+    --muted: #8b98a5;
+    --accent: #d97757;
+    --accent-soft: rgba(217, 119, 87, 0.15);
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: rgba(11, 15, 20, 0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .brand { font-weight: 700; letter-spacing: 0.02em; }
+  nav .badge {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  .hero {
+    padding: 56px 0 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero h1 { font-size: 2rem; margin: 0 0 12px; }
+  .hero p { color: var(--muted); max-width: 640px; }
+  .disclaimer {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border: 1px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: var(--radius);
+    font-size: 14px;
+  }
+
+  section { padding: 40px 0; }
+  section h2 { font-size: 1.3rem; margin-bottom: 20px; }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .chip {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-alt);
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .chip.on { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 900px) { .module-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .module-grid { grid-template-columns: 1fr; } }
+
+  .module-card {
+    border: 1px solid var(--border);
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 160px;
+  }
+  .module-card .id { font-size: 12px; color: var(--accent); font-weight: 600; }
+  .module-card h3 { margin: 0; font-size: 1rem; }
+  .module-card p { margin: 0; color: var(--muted); font-size: 13px; flex-grow: 1; }
+  .module-card a { font-size: 13px; font-weight: 600; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 0 40px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">Claude Certified Architect — Foundations</span>
+  <span class="badge">Conteúdo não-oficial</span>
+</nav>
+
+<main>
+  <section class="hero">
+    <h1>Guia de estudo para o ecossistema Claude/Anthropic</h1>
+    <p>
+      18 módulos em PT-BR cobrindo modelos Claude, Messages API, engenharia de prompts,
+      tool use, agentes, MCP, RAG, segurança e deploy enterprise — com cheatsheets,
+      flashcards, casos de uso, labs e simulados por módulo.
+    </p>
+    <div class="disclaimer">
+      <strong>Aviso:</strong> este é um material de estudo comunitário, não afiliado nem
+      endossado pela Anthropic. "Claude Certified Architect – Foundations" não é uma
+      certificação oficial. Confirme sempre qualquer detalhe técnico na documentação
+      oficial em <a href="https://docs.claude.com" target="_blank" rel="noopener">docs.claude.com</a>.
+    </div>
+  </section>
+
+  <section id="modulos">
+    <h2>Módulos</h2>
+    <div class="filters" id="filters"></div>
+    <div class="module-grid" id="moduleGrid"></div>
+  </section>
+</main>
+
+<footer>
+  <p>Licença MIT. Repositório de estudo independente sobre o ecossistema Claude/Anthropic.</p>
+</footer>
+
+<script>
+  const tracks = [
+    "Todos",
+    "Fundamentos",
+    "Modelos & API",
+    "Prompting & Ferramentas",
+    "Agentes & Automação",
+    "Dados & Multimodalidade",
+    "Segurança & Enterprise",
+    "Revisão"
+  ];
+
+  const modules = [
+    { id: "01", title: "Introdução à Claude e ao Ecossistema Anthropic", desc: "Produtos Claude, uso vs construção, aviso de não-oficialidade.", folder: "01-Introducao-Claude-e-Ecossistema-Anthropic", track: "Fundamentos" },
+    { id: "02", title: "Fundamentos de IA Generativa e LLMs", desc: "Tokens, temperatura, janela de contexto, modelo base vs assistente.", folder: "02-Fundamentos-de-IA-Generativa-e-LLMs", track: "Fundamentos" },
+    { id: "03", title: "Fundamentos de ML para LLMs", desc: "Treino vs inferência, fine-tuning vs prompting vs RAG.", folder: "03-Fundamentos-de-ML-para-LLMs", track: "Fundamentos" },
+    { id: "04", title: "Modelos Claude e Model Family", desc: "Opus, Sonnet, Haiku, Fable: trade-offs e escolha por caso de uso.", folder: "04-Modelos-Claude-e-Model-Family", track: "Modelos & API" },
+    { id: "05", title: "Claude API e Messages API", desc: "Autenticação, streaming, system prompt, SDKs oficiais.", folder: "05-Claude-API-e-Messages-API", track: "Modelos & API" },
+    { id: "06", title: "Engenharia de Prompts", desc: "Estrutura, XML tags, few-shot, chain-of-thought.", folder: "06-Engenharia-de-Prompts", track: "Prompting & Ferramentas" },
+    { id: "07", title: "Tool Use, Function Calling e MCP", desc: "Ciclo de chamada de ferramenta e Model Context Protocol.", folder: "07-Tool-Use-Function-Calling-e-MCP", track: "Prompting & Ferramentas" },
+    { id: "08", title: "Agentes e Claude Agent SDK", desc: "Loop de agente, subagentes, orquestração multiagente.", folder: "08-Agentes-e-Claude-Agent-SDK", track: "Agentes & Automação" },
+    { id: "09", title: "Claude Code e Automação de Engenharia", desc: "Hooks, skills, permissões, integração com Git/CI.", folder: "09-Claude-Code-e-Automacao-de-Engenharia", track: "Agentes & Automação" },
+    { id: "10", title: "Dados, RAG e Embeddings", desc: "Contexto longo vs RAG, busca semântica, grounding.", folder: "10-Dados-RAG-e-Embeddings", track: "Dados & Multimodalidade" },
+    { id: "11", title: "Multimodalidade (Visão e Documentos)", desc: "Leitura de imagem/PDF, limites e casos de uso.", folder: "11-Multimodalidade-Visao-e-Documentos", track: "Dados & Multimodalidade" },
+    { id: "12", title: "Gerenciamento de Contexto e Prompt Caching", desc: "Contexto longo, caching, sumarização progressiva.", folder: "12-Gerenciamento-de-Contexto-e-Prompt-Caching", track: "Dados & Multimodalidade" },
+    { id: "13", title: "Segurança, Privacidade e IA Responsável", desc: "Retenção de dados, guardrails, revisão humana.", folder: "13-Seguranca-Privacidade-e-IA-Responsavel", track: "Segurança & Enterprise" },
+    { id: "14", title: "Deploy Enterprise", desc: "API direta vs Bedrock vs Vertex AI vs Microsoft Foundry.", folder: "14-Deploy-Enterprise-API-Bedrock-Vertex-Foundry", track: "Segurança & Enterprise" },
+    { id: "15", title: "Boas Práticas, Avaliação e Custos", desc: "Evals, observabilidade, otimização de custo de tokens.", folder: "15-Boas-Praticas-Avaliacao-e-Custos", track: "Segurança & Enterprise" },
+    { id: "16", title: "Simulados e Questões", desc: "Banco de questões comentadas e simulados progressivos.", folder: "16-Simulados-e-Questoes", track: "Revisão" },
+    { id: "17", title: "Glossário", desc: "Termos-chave dos módulos 01 a 15 em ordem alfabética.", folder: "17-Glossario", track: "Revisão" },
+    { id: "18", title: "Recursos e Links", desc: "Curadoria de documentação oficial e comunidades.", folder: "18-Recursos-e-Links", track: "Revisão" }
+  ];
+
+  let activeTrack = "Todos";
+
+  function filteredModules() {
+    if (activeTrack === "Todos") return modules;
+    return modules.filter(m => m.track === activeTrack);
+  }
+
+  function renderFilters() {
+    const el = document.getElementById("filters");
+    el.innerHTML = "";
+    tracks.forEach(t => {
+      const btn = document.createElement("button");
+      btn.className = "chip" + (t === activeTrack ? " on" : "");
+      btn.textContent = t;
+      btn.addEventListener("click", () => {
+        activeTrack = t;
+        renderFilters();
+        renderModules();
+      });
+      el.appendChild(btn);
+    });
+  }
+
+  function renderModules() {
+    const grid = document.getElementById("moduleGrid");
+    grid.innerHTML = "";
+    filteredModules().forEach(m => {
+      const card = document.createElement("article");
+      card.className = "module-card";
+      card.innerHTML = `
+        <span class="id">Módulo ${m.id}</span>
+        <h3>${m.title}</h3>
+        <p>${m.desc}</p>
+        <a href="./${m.folder}/README.md">Abrir módulo</a>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  renderFilters();
+  renderModules();
+</script>
+
+</body>
+</html>
